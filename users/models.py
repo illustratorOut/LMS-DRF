@@ -1,12 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from materials.models import Course, Lesson
-
-NULLABLE = {
-    'blank': True,
-    'null': True
-}
+from materials.models import Course, Lesson, NULLABLE
 
 FREQUENCY_CHOICES = (
     ('1', 'наличные'),
