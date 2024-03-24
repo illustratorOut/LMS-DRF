@@ -2,8 +2,9 @@ from rest_framework.generics import RetrieveAPIView, DestroyAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from materials.models import Lesson
+from materials.paginators import CustomPagination
 from materials.permissions import IsModerator, IsOwner
-from materials.seriallizers.lesson import LessonSerializer
+from materials.seriallizers.lesson import LessonSerializer, LessonCreateSerializer
 
 
 class LessonDetailView(RetrieveAPIView):
@@ -18,12 +19,13 @@ class LessonListView(ListAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = CustomPagination
 
 
 class LessonCreateView(CreateAPIView):
     ''' Создание сущности '''
     queryset = Lesson.objects.all()
-    serializer_class = LessonSerializer
+    serializer_class = LessonCreateSerializer
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):

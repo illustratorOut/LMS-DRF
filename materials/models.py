@@ -13,7 +13,7 @@ class Course(models.Model):
     owner = models.ForeignKey('users.User', on_delete=models.CASCADE, **NULLABLE)
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.__class__.__name__}({self.name} - {self.description})'
 
     class Meta:
         verbose_name = 'Курс'
@@ -29,8 +29,21 @@ class Lesson(models.Model):
     owner = models.ForeignKey('users.User', on_delete=models.CASCADE, **NULLABLE)
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.__class__.__name__}({self.name} - {self.description})'
 
     class Meta:
         verbose_name = 'Урок'
         verbose_name_plural = 'Уроки'
+
+
+class Subscriptions(models.Model):
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='Пользователь')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс')
+    status = models.BooleanField(default=False, verbose_name='Подписан пользователь')
+
+    def __str__(self):
+        return f'{self.__class__.__name__}({self.user} - {self.course})'
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
