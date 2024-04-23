@@ -128,28 +128,28 @@ class Command(BaseCommand):
             {
                 'user': user_[2],
                 'date_payment': datetime.datetime.now().date(),
-                'payment_course': course_[0],
-                'payment_amount': 1000,
+                'course': course_[0],
+                'amount': 1000,
             },
             {
                 'user': user_[2],
                 'date_payment': datetime.datetime.now().date(),
-                'payment_lesson': lesson_[1],
-                'payment_amount': 800,
-                'payment_method': '2',
+                'lesson': lesson_[1],
+                'amount': 800,
+                'method': '2',
             },
             {
                 'user': user_[1],
                 'date_payment': datetime.datetime.now().date(),
-                'payment_lesson': lesson_[1],
-                'payment_amount': 100,
+                'lesson': lesson_[1],
+                'amount': 100,
             },
             {
                 'user': user_[1],
                 'date_payment': datetime.datetime.now().date(),
-                'payment_course': course_[2],
-                'payment_amount': 20000,
-                'payment_method': '2',
+                'course': course_[2],
+                'amount': 20000,
+                'method': '2',
             },
         ]
 

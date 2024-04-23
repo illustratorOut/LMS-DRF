@@ -1,21 +1,24 @@
 from rest_framework.generics import RetrieveAPIView, ListAPIView, CreateAPIView, UpdateAPIView, get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from materials.models import Subscriptions, Course
 from materials.paginators import CustomPagination
 from materials.seriallizers.subscriptions import SubscriptionsSerializer
+from materials.services import Stripe_API
+from users.models import Payment
 
 
 class SubscriptionsListView(ListAPIView):
-    ''' Отображение списка сущностей '''
+    '''Отображение списка сущностей'''
     queryset = Subscriptions.objects.all()
     serializer_class = SubscriptionsSerializer
     permission_classes = [IsAuthenticated]
 
 
 class SubscriptionsCreateView(CreateAPIView):
-    ''' Создание сущности '''
+    '''Создание сущности'''
     queryset = Subscriptions.objects.all()
     serializer_class = SubscriptionsSerializer
     permission_classes = [IsAuthenticated]
@@ -34,3 +37,22 @@ class SubscriptionsCreateView(CreateAPIView):
             Subscriptions.objects.create(user=user, course=course_item, status=True)
             message = 'подписка добавлена'
         return Response({"message": message})
+
+
+class StripeAPIView(APIView):
+    '''Создание сущности Stripe'''
+    permission_classes = [IsAuthenticated]
+
+    def post(self, *args, **kwargs):
+        course_id = kwargs.get('pk')
+        payment = get_object_or_404(Payment, course=course_id)
+        stripe_api = Stripe_API()
+
+        print()
+        if payment.price_id is None or payment.product_id is None:
+            price = stripe_api.create_product(payment.course.name, payment.amount)
+            payment.price_id = price['id']
+            payment.product_id = price['product']
+            payment.save()
+        session = stripe_api.create_session(payment.price_id)
+        return Response({'url': session.url})
