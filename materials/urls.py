@@ -6,7 +6,8 @@ from materials.views.course import CourseViewSet
 
 from materials.views.lesson import LessonListView, LessonDetailView, LessonUpdateView, LessonCreateView, \
     LessonDeleteView
-from materials.views.subscriptions import SubscriptionsListView, SubscriptionsCreateView, StripeAPIView
+from materials.views.subscriptions import SubscriptionsListView, SubscriptionsCreateView, StripeAPIView, \
+    StripePaymentStatusAPIView
 
 app_name = MaterialsConfig.name
 
@@ -17,7 +18,9 @@ urlpatterns = [
     path('create/', LessonCreateView.as_view()),
     path('update/<int:pk>/', LessonUpdateView.as_view()),
     path('delete/<int:pk>/', LessonDeleteView.as_view()),
+
     path('payment/<int:pk>/', StripeAPIView.as_view(), name='payment'),
+    path('payment-status/<int:pk>/', StripePaymentStatusAPIView.as_view(), name='payment-status'),
 
     # Subscriptions
     path('subscriptions/', SubscriptionsListView.as_view()),

@@ -23,14 +23,18 @@ class User(AbstractUser):
 class Payment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     date_payment = models.DateField(verbose_name='Дата оплаты')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Оплаченный курс', **NULLABLE, related_name='annotation_set')
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='Оплаченный урок', **NULLABLE, related_name='annotation_set')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Оплаченный курс', **NULLABLE,
+                               related_name='annotation_set')
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='Оплаченный урок', **NULLABLE,
+                               related_name='annotation_set')
     amount = models.PositiveIntegerField(default=1000, verbose_name='Сумма оплаты')
     method = models.CharField(choices=FREQUENCY_CHOICES,
                               default='1',
                               verbose_name='Способ оплаты: наличные или перевод на счет')
     price_id = models.CharField(max_length=100, **NULLABLE, verbose_name='ID цены')
     product_id = models.CharField(max_length=100, **NULLABLE, verbose_name='ID банковского продукта')
+    payment_status = models.CharField(max_length=100, **NULLABLE, default='unpaid', verbose_name='Статус платежа')
+    session_id = models.TextField(**NULLABLE, verbose_name='ID сессии')
 
     def __str__(self):
         return f'User: {self.user} paid behind {self.course} or {self.lesson} '

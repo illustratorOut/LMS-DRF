@@ -48,11 +48,30 @@ class StripeAPIView(APIView):
         payment = get_object_or_404(Payment, course=course_id)
         stripe_api = Stripe_API()
 
-        print()
         if payment.price_id is None or payment.product_id is None:
             price = stripe_api.create_product(payment.course.name, payment.amount)
             payment.price_id = price['id']
             payment.product_id = price['product']
             payment.save()
         session = stripe_api.create_session(payment.price_id)
+        payment.session_id = session.get('id')
+        payment.save()
+
         return Response({'url': session.url})
+
+
+class StripePaymentStatusAPIView(APIView):
+    '''Статус платежа Stripe'''
+    permission_classes = [IsAuthenticated]
+
+    def post(self, *args, **kwargs):
+        course_id = kwargs.get('pk')
+        stripe_api = Stripe_API()
+        payment = get_object_or_404(Payment, course=course_id)
+        res = stripe_api.retrieve_session(payment.session_id)
+        payment_status = res.get('payment_status')
+
+        payment.payment_status = payment_status
+        payment.save()
+
+        return Response({'payment_status': payment_status})

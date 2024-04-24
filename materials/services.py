@@ -32,3 +32,9 @@ class Stripe_API:
             line_items=[{"price": price_id, "quantity": 1}],
             mode="payment",
         )
+
+    def retrieve_session(self, id):
+        '''Востановление сессии Stripe'''
+        return stripe.checkout.Session.retrieve(
+            id
+        )
