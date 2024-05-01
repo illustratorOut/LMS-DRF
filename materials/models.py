@@ -11,6 +11,8 @@ class Course(models.Model):
     photo = models.ImageField(upload_to='course/', verbose_name='Превью', **NULLABLE)
     description = models.TextField(verbose_name='Описание')
     owner = models.ForeignKey('users.User', on_delete=models.CASCADE, **NULLABLE)
+    date_update = models.DateTimeField(verbose_name='Дата обновления', **NULLABLE)
+
 
     def __str__(self):
         return f'{self.__class__.__name__}({self.name} - {self.description})'
@@ -27,6 +29,7 @@ class Lesson(models.Model):
     link_video = models.CharField(max_length=200, verbose_name='Ссылка на видео', **NULLABLE)
     linl_course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс', **NULLABLE)
     owner = models.ForeignKey('users.User', on_delete=models.CASCADE, **NULLABLE)
+    date_update = models.DateTimeField(verbose_name='Дата обновления', **NULLABLE)
 
     def __str__(self):
         return f'{self.__class__.__name__}({self.name} - {self.description})'
