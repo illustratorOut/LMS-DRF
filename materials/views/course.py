@@ -3,6 +3,7 @@ import json
 from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from materials.models import Course, Subscriptions
 from materials.paginators import CustomPagination
@@ -35,9 +36,12 @@ class CourseViewSet(viewsets.ModelViewSet):
         '''Отправка сообщений при обновлении курса'''
         update_course = serializer.save()
         print(update_course)
+        print(type(update_course))
+
         # subscribers = get_object_or_404(Subscriptions, course=update_course.pk)
         subscribers = Subscriptions.objects.filter(course=update_course.pk).values()
 
-        send_mail_update_course.delay(subscribers, update_course)
-
+        res = send_mail_update_course.delay()
+        res.get()
         update_course.save()
+        return Response('sdf')
