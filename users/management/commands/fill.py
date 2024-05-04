@@ -35,6 +35,13 @@ class Command(BaseCommand):
                 'last_name': 'Users',
                 'is_active': True,
                 'password': '1234S5678'},
+
+            'user_uses1': {
+                'email': 'bmgula55@mail.ru',
+                'first_name': 'User',
+                'last_name': 'Users',
+                'is_active': True,
+                'password': '1234S5678'},
         }
 
         list_user_ = []
@@ -56,7 +63,6 @@ class Command(BaseCommand):
 
     def create_course(self):
         ''' Создаем курс '''
-
         course = [
             {
                 'name': 'Python',
@@ -154,17 +160,16 @@ class Command(BaseCommand):
         ]
 
         payment = [Payment.objects.create(**i) for i in payments]
-
-        print(f'{Fore.GREEN}Cозданы платежи: {Fore.RESET}', f'User:', *payment, sep='\n')
+        print(Fore.GREEN + 'Cозданы платежи: ' + Fore.RESET, 'User:', *payment, sep='\n')
 
     def add_group(self, name_group):
-        ''' Создаем Groups() Пример:Менеджер '''
+        '''Создаем Groups() Пример:Менеджер'''
         try:
             manager_group = Group.objects.get_or_create(name=name_group)
-            print(f'\nГруппа' + Fore.GREEN + f' "{name_group}" ' + Fore.RESET + 'созданна!')
-        except:
+            print('\nГруппа' + Fore.GREEN + f' "{name_group}" ' + Fore.RESET + 'созданна!')
+            return manager_group
+        except Exception:
             print(f'Группа {Fore.RED}{name_group}{Fore.RESET} уже существует!')
-        return manager_group
 
     def add_permissions(self, name_group: str):
         manager_group = Group.objects.filter(name=name_group).get()
@@ -185,8 +190,7 @@ class Command(BaseCommand):
                 print(f'+ {Fore.GREEN}{perm}{Fore.RESET}')
 
     def handle(self, *args, **options):
-
-        list_user = self.create_user()
+        self.create_user()
         list_course = self.create_course()
         list_lesson = self.create_lessons(list_course)
 
@@ -197,7 +201,9 @@ class Command(BaseCommand):
         self.add_group('Модератор')
         self.add_permissions('Модератор')
         user = User.objects.get(email='manager@sky.pro')
+        user2 = User.objects.get(email='bmgula55@mail.ru')
         my_group = Group.objects.get(name='Модератор')
         my_group.user_set.add(user)
+        my_group.user_set.add(user2)
         print(
-            f'\nПользователю: ' + Fore.MAGENTA + f'{user}' + Fore.RESET + f' присвоены права - ' + Fore.GREEN + f'"{my_group}"' + Fore.RESET)
+            '\nПользователю: ' + Fore.MAGENTA + f'{user}' + Fore.RESET + ' присвоены права - ' + Fore.GREEN + f'"{my_group}"' + Fore.RESET)

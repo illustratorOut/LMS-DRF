@@ -1,10 +1,9 @@
-from rest_framework.generics import RetrieveAPIView, ListAPIView, CreateAPIView, UpdateAPIView, get_object_or_404
+from rest_framework.generics import ListAPIView, CreateAPIView, get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from materials.models import Subscriptions, Course
-from materials.paginators import CustomPagination
 from materials.seriallizers.subscriptions import SubscriptionsSerializer
 from materials.services import Stripe_API
 from users.models import Payment
