@@ -1,15 +1,13 @@
-import json
+import datetime
 
 from rest_framework import viewsets
-from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-
 from materials.models import Course, Subscriptions
 from materials.paginators import CustomPagination
 from materials.permissions import IsOwner, IsModerator
 from materials.seriallizers.course import CourseSerializer
 from materials.tasks import send_mail_update_course
+from django.utils import timezone
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -35,13 +33,12 @@ class CourseViewSet(viewsets.ModelViewSet):
     def perform_update(self, serializer):
         '''Отправка сообщений при обновлении курса'''
         update_course = serializer.save()
-        print(update_course)
-        print(type(update_course))
-
-        # subscribers = get_object_or_404(Subscriptions, course=update_course.pk)
         subscribers = Subscriptions.objects.filter(course=update_course.pk).values()
+        course = Course.objects.filter(pk=update_course.pk)[0]
 
-        res = send_mail_update_course.delay()
-        res.get()
+        if subscribers and course.date_update > timezone.now() + timezone.timedelta(hours=4):
+            for subscriber in subscribers:
+                send_mail_update_course.delay(subscriber['user_id'], update_course.pk)
+
+        update_course.date_update = timezone.now()
         update_course.save()
-        return Response('sdf')

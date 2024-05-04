@@ -13,7 +13,6 @@ class Course(models.Model):
     owner = models.ForeignKey('users.User', on_delete=models.CASCADE, **NULLABLE)
     date_update = models.DateTimeField(verbose_name='Дата обновления', **NULLABLE)
 
-
     def __str__(self):
         return f'{self.__class__.__name__}({self.name} - {self.description})'
 
